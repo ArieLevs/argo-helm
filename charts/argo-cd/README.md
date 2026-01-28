@@ -1210,6 +1210,11 @@ NAME: my-release
 | server.autoscaling.minReplicas | int | `1` | Minimum number of replicas for the Argo CD server [HPA] |
 | server.autoscaling.targetCPUUtilizationPercentage | int | `50` | Average CPU utilization percentage for the Argo CD server [HPA] |
 | server.autoscaling.targetMemoryUtilizationPercentage | int | `50` | Average memory utilization percentage for the Argo CD server [HPA] |
+| server.aws.targetGroupConfiguration.annotations | object | `{}` | Additional TargetGroupConfiguration annotations |
+| server.aws.targetGroupConfiguration.defaultConfiguration | object | `{}` (See [values.yaml]) | Default target group configuration |
+| server.aws.targetGroupConfiguration.enabled | bool | `false` | Enable TargetGroupConfiguration resource for Argo CD server (AWS Gateway API) |
+| server.aws.targetGroupConfiguration.labels | object | `{}` | Additional TargetGroupConfiguration labels |
+| server.aws.targetGroupConfiguration.routeConfigurations | list | `[]` (See [values.yaml]) | Route-specific configurations |
 | server.backendTLSPolicy.annotations | object | `{}` | Additional BackendTLSPolicy annotations |
 | server.backendTLSPolicy.enabled | bool | `false` | Enable BackendTLSPolicy resource for Argo CD server (Gateway API) |
 | server.backendTLSPolicy.labels | object | `{}` | Additional BackendTLSPolicy labels |

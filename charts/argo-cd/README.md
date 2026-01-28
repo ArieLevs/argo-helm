@@ -330,6 +330,38 @@ server:
     wellKnownCACertificates: System
 ```
 
+#### AWS ALB Gateway API with HTTPS backend
+
+AWS Load Balancer Controller does **NOT** support the standard Gateway API `BackendTLSPolicy`. Instead, use the AWS-specific `TargetGroupConfiguration` CRD for HTTPS backend communication.
+
+> **Note:**
+> Reference: [AWS Load Balancer Controller Gateway API documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/gateway/l7gateway/)
+
+```yaml
+configs:
+  params:
+    server.insecure: false  # HTTPS backend
+
+server:
+  httproute:
+    enabled: true
+    parentRefs:
+      - name: example-gateway
+        namespace: gateway-system
+
+  aws:
+    targetGroupConfiguration:
+      enabled: true
+      defaultConfiguration:
+        protocol: HTTPS
+        protocolVersion: HTTP1
+        healthCheck:
+          protocol: HTTPS
+          path: /healthz
+          intervalSeconds: 15
+          timeoutSeconds: 5
+```
+
 ## Setting the initial admin password via Argo CD Application CR
 
 > **Note:** When deploying the `argo-cd` chart via an Argo CD `Application` CR, define your bcrypt-hashed admin password under `helm.values`—not `helm.parameters`—because Argo CD performs variable substitution on `parameters`, which will mangle any `$…` in your hash.

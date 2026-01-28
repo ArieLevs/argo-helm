@@ -1,0 +1,27 @@
+{{- if and (or .Values.server.httproute.enabled .Values.server.grpcroute.enabled) .Values.server.aws.targetGroupConfiguration.enabled -}}
+{{- $fullName := include "argo-cd.server.fullname" . -}}
+apiVersion: gateway.k8s.aws/v1beta1
+kind: TargetGroupConfiguration
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ include "argo-cd.namespace" . }}
+  labels:
+    {{- include "argo-cd.labels" (dict "context" . "component" .Values.server.name "name" .Values.server.name) | nindent 4 }}
+    {{- with .Values.server.aws.targetGroupConfiguration.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.server.aws.targetGroupConfiguration.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  targetGroupARN: {{ $fullName }}
+  {{- with .Values.server.aws.targetGroupConfiguration.defaultConfiguration }}
+  defaultConfiguration:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.server.aws.targetGroupConfiguration.routeConfigurations }}
+  routeConfigurations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

@@ -2687,6 +2687,7 @@ server:
   # NOTE: BackendTLSPolicy support is in EXPERIMENTAL status
   # Required for HTTPS backends when using Gateway API
   # Not all Gateway controllers support this resource (e.g., Cilium does not support it yet)
+  # NOTE: AWS ALB Gateway does NOT support BackendTLSPolicy - use server.aws.targetGroupConfiguration instead
   backendTLSPolicy:
     # -- Enable BackendTLSPolicy resource for Argo CD server (Gateway API)
     enabled: false
@@ -2710,6 +2711,36 @@ server:
       #     group: ""
       #     kind: ConfigMap
       # wellKnownCACertificates: System
+
+  ## AWS-specific Gateway API configuration
+  ## Reference: https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/gateway/l7gateway/
+  aws:
+    # TargetGroupConfiguration for AWS ALB Gateway API
+    # Required for HTTPS backends when using AWS Load Balancer Controller with Gateway API
+    # NOTE: AWS ALB Gateway does NOT support BackendTLSPolicy - use this instead
+    targetGroupConfiguration:
+      # -- Enable TargetGroupConfiguration resource for Argo CD server (AWS Gateway API)
+      enabled: false
+      # -- Additional TargetGroupConfiguration labels
+      labels: {}
+      # -- Additional TargetGroupConfiguration annotations
+      annotations: {}
+      # -- Default target group configuration
+      # @default -- `{}` (See [values.yaml])
+      defaultConfiguration: {}
+        # protocol: HTTPS
+        # protocolVersion: HTTP1
+        # healthCheck:
+        #   protocol: HTTPS
+        #   path: /healthz
+        #   intervalSeconds: 15
+        #   timeoutSeconds: 5
+      # -- Route-specific configurations
+      # @default -- `[]` (See [values.yaml])
+      routeConfigurations: []
+        # - name: argocd-server-route
+        #   targetGroupConfiguration:
+        #     protocol: HTTPS
 
   ## Enable this and set the rules: to whatever custom rules you want for the Cluster Role resource.
   ## Defaults to off
